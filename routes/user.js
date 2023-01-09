@@ -10,8 +10,8 @@ import {
 // eslint-disable-next-line import/prefer-default-export, global-require
 export const router = Router();
 
-router.get('/users', getUsers);
-router.get('/users/:id', getUser);
-router.patch('/users/me', updateMe);
-router.patch('/users/me/avatar', updateAvatar);
-router.post('/users', postUser);
+router.get('/', getUsers);
+router.get('/:id', getUser);
+router.patch('/me', updateMe);
+router.patch('/me/avatar', updateAvatar);
+router.post('/', postUser);

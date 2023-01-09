@@ -4,15 +4,12 @@ import { log } from 'console';
 import { router as cardRoute } from './routes/card.js';
 // eslint-disable-next-line import/named
 import { router as userRoute } from './routes/user.js';
-import notFoundErrorHandler from './errorHandlers/notFoundErrorHandler.js';
-import badRequestErrorHandler from './errorHandlers/badRequestErrorHandler.js';
-import castErrorHandler from './errorHandlers/castErrorHandler.js';
-import validationErrorHandler from './errorHandlers/validationErrorHandler.js';
-import unknownErrorHandler from './errors/UnknownError.js';
+import errorHandler from './errorHandlers/ErrorHandler.js';
+import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
 import NotFoundError from './errors/NotFoundError.js';
 import { INTERNAL_SERVER_ERR_CODE } from './utils/errorsCodes.js';
 // Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, BASE_PATH = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 const app = express();
 
@@ -22,7 +19,7 @@ app.use(urlencoded({ extended: true }));
 async function startApp() {
   try {
     set('strictQuery', false);
-    await connect('mongodb://localhost:27017/mestodb');
+    await connect(BASE_PATH);
     app.use(json());
     app.use((req, res, next) => {
       req.user = {
@@ -31,17 +28,14 @@ async function startApp() {
 
       next();
     });
-    app.use('/', userRoute);
-    app.use('/', cardRoute);
+    app.use('/users', userRoute);
+    app.use('/cards', cardRoute);
     app.use('*', (req, res, next) => next(new NotFoundError('Страница не найдена')));
-    app.use(notFoundErrorHandler);
-    app.use(badRequestErrorHandler);
-    app.use(castErrorHandler);
-    app.use(validationErrorHandler);
+    app.use(errorHandler);
     app.use(unknownErrorHandler);
   } catch (err) {
     if (err) {
-      app.use((req, res) => res.status(INTERNAL_SERVER_ERR_CODE).send({ message: 'Что-то пошло не так' }));
+      app.use((req, res) => res.status(INTERNAL_SERVER_ERR_CODE).send({ message: 'На сервере произошла ошибка' }));
     }
   }
 }
