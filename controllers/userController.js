@@ -10,9 +10,14 @@ export async function getUsers(req, res, next) {
   }
 }
 
-async function updateUser(req, res, next) {
+export async function updateMe(req, res, next) {
   try {
+<<<<<<< HEAD
     const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+=======
+    const { name, about } = req.body;
+    const newMe = await User.findByIdAndUpdate(req.user._id, { name, about }, {
+>>>>>>> parent of 26d8d52... added url validation, fixed errors messages
       new: true,
       runValidators: true,
       upsert: true,
@@ -26,16 +31,21 @@ async function updateUser(req, res, next) {
   }
 }
 
-export async function updateMe(req, res, next) {
-  const { name, about } = req.body;
-  req.body = { name, about };
-  updateUser(req, res, next);
-}
-
 export async function updateAvatar(req, res, next) {
-  const { avatar } = req.body;
-  req.body = { avatar };
-  updateUser(req, res, next);
+  try {
+    const { avatar } = req.body;
+    const newAvatar = await User.findByIdAndUpdate(req.user._id, { avatar }, {
+      new: true,
+      runValidators: true,
+      upsert: true,
+    });
+    if (newAvatar === null) {
+      throw new NotFoundError('Пользователь не найден');
+    }
+    res.send(newAvatar);
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function getUser(req, res, next) {

@@ -10,13 +10,6 @@ const cardSchema = new Schema({
   link: {
     type: String,
     required: true,
-    validate: {
-      validator(v) {
-        // eslint-disable-next-line no-useless-escape
-        return /^https?:\/\/\w+(\.\w+)*(:[0-9]+)?(\/.*)?$/i.test(v);
-      },
-      message: (props) => `${props.value} is not a valid url!`,
-    },
   },
   owner: {
     type: Schema.Types.ObjectId,

@@ -16,13 +16,6 @@ const userSchema = new Schema({
   avatar: {
     type: String,
     required: true,
-    validate: {
-      validator(v) {
-        // eslint-disable-next-line no-useless-escape
-        return /^https?:\/\/\w+(\.\w+)*(:[0-9]+)?(\/.*)?$/i.test(v);
-      },
-      message: (props) => `${props.value} is not a valid url!`,
-    },
   },
 });
 export default model('user', userSchema);

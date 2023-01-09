@@ -10,8 +10,8 @@ import {
 // eslint-disable-next-line import/prefer-default-export, global-require
 export const router = Router();
 
-router.get('/', getCards);
-router.post('/', createCard);
-router.delete('/:id', deleteCard);
-router.put('/:id/likes', likeCard);
-router.delete('/:id/likes', dislikeCard);
+router.get('/cards', getCards);
+router.post('/cards', createCard);
+router.delete('/cards/:id', deleteCard);
+router.put('/cards/:id/likes', likeCard);
+router.delete('/cards/:id/likes', dislikeCard);
