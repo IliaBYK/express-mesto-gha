@@ -4,6 +4,10 @@ import { log } from 'console';
 import { router as cardRoute } from './routes/card.js';
 // eslint-disable-next-line import/named
 import { router as userRoute } from './routes/user.js';
+import badRequestErrorHandler from './errorHandlers/badRequestErrorHandler.js';
+import castErrorHandler from './errorHandlers/castErrorHandler.js';
+import notFoundErrorHandler from './errorHandlers/notFoundErrorHandler.js';
+import validationErrorHandler from './errorHandlers/validationErrorHandler.js';
 import errorHandler from './errorHandlers/ErrorHandler.js';
 import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
 import NotFoundError from './errors/NotFoundError.js';

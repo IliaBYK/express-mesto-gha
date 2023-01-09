@@ -12,15 +12,15 @@ export async function getUsers(req, res, next) {
 
 async function updateUser(req, res, next) {
   try {
-    const newMe = await User.findByIdAndUpdate(req.user._id, req.body, {
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
       upsert: true,
     });
-    if (newMe === null) {
+    if (user === null) {
       throw new NotFoundError('Пользователь не найден');
     }
-    res.send(newMe);
+    res.send(user);
   } catch (err) {
     next(err);
   }
