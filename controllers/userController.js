@@ -12,20 +12,16 @@ export async function getUsers(req, res, next) {
 
 export async function updateMe(req, res, next) {
   try {
-<<<<<<< HEAD
-    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
-=======
     const { name, about } = req.body;
     const newMe = await User.findByIdAndUpdate(req.user._id, { name, about }, {
->>>>>>> parent of 26d8d52... added url validation, fixed errors messages
       new: true,
       runValidators: true,
       upsert: true,
     });
-    if (user === null) {
+    if (newMe === null) {
       throw new NotFoundError('Пользователь не найден');
     }
-    res.send(user);
+    res.send(newMe);
   } catch (err) {
     next(err);
   }
