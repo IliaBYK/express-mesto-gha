@@ -10,6 +10,7 @@ import castErrorHandler from './errorHandlers/castErrorHandler.js';
 import validationErrorHandler from './errorHandlers/validationErrorHandler.js';
 import unknownErrorHandler from './errors/UnknownError.js';
 import NotFoundError from './errors/NotFoundError.js';
+import { INTERNAL_SERVER_ERR_CODE } from './utils/errorsCodes.js';
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -40,7 +41,7 @@ async function startApp() {
     app.use(unknownErrorHandler);
   } catch (err) {
     if (err) {
-      app.use((req, res) => res.status(500).send({ message: 'Что-то пошло не так' }));
+      app.use((req, res) => res.status(INTERNAL_SERVER_ERR_CODE).send({ message: 'Что-то пошло не так' }));
     }
   }
 }

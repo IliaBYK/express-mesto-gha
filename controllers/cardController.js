@@ -1,5 +1,6 @@
 import Card from '../models/card.js';
 import NotFoundError from '../errors/NotFoundError.js';
+import { OK_CODE_STATUS } from '../utils/errorsCodes.js';
 
 export async function getCards(req, res, next) {
   try {
@@ -42,7 +43,7 @@ export async function createCard(req, res, next) {
     let card = new Card({ ...req.body, owner: req.user._id });
     await card.save();
     card = await card.populate('owner likes');
-    res.status(200).send(card);
+    res.status(OK_CODE_STATUS).send(card);
   } catch (err) {
     next(err);
   }
