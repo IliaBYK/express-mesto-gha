@@ -8,6 +8,7 @@ import notFoundErrorHandler from './errorHandlers/notFoundErrorHandler.js';
 import badRequestErrorHandler from './errorHandlers/badRequestErrorHandler.js';
 import castErrorHandler from './errorHandlers/castErrorHandler.js';
 import validationErrorHandler from './errorHandlers/validationErrorHandler.js';
+import unknownErrorHandler from './errors/UnknownError.js';
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -34,6 +35,7 @@ async function startApp() {
     app.use(badRequestErrorHandler);
     app.use(castErrorHandler);
     app.use(validationErrorHandler);
+    app.use(unknownErrorHandler);
   } catch (err) {
     if (err) {
       app.use((req, res) => res.status(500).send({ message: 'Что-то пошло не так' }));

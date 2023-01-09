@@ -1,4 +1,6 @@
 import Card from '../models/card.js';
+import NotFoundError from '../errors/NotFoundError.js';
+import ForbiddenError from '../errors/ForbiddenError.js';
 
 export async function getCards(req, res, next) {
   try {
@@ -9,38 +11,39 @@ export async function getCards(req, res, next) {
   }
 }
 
-export async function likeCard(req, res, next) {
+// такое решение из-за ошибки: Converting circular structure to JSON
+
+async function toggleLike(method, req, res, next) {
   try {
-    const cardLiked = Card.findByIdAndUpdate(
-      req.params.cardId,
-      { $addToSet: { likes: req.user._id } },
-      { new: true },
-    );
-    res.send(cardLiked);
+    const card = await Card.findByIdAndUpdate(req.params.id, {
+      [method]: { likes: req.user._id },
+    }, {
+      new: true,
+      runValidators: true,
+    }).populate('owner likes');
+    if (card === null) {
+      throw new NotFoundError('Карточка не найдена');
+    }
+    res.send(card);
   } catch (err) {
     next(err);
   }
 }
 
-export async function dislikeCard(req, res, next) {
-  try {
-    const cardDisliked = Card.findByIdAndUpdate(
-      req.params.cardId,
-      { $pull: { likes: req.user._id } },
-      { new: true },
-    );
-    res.send(cardDisliked);
-  } catch (err) {
-    next(err);
-  }
+export function likeCard(req, res, next) {
+  return toggleLike('$addToSet', req, res, next);
+}
+
+export function dislikeCard(req, res, next) {
+  return toggleLike('$pull', req, res, next);
 }
 
 export async function createCard(req, res, next) {
   try {
-    let newCard = await Card.create({ ...req.body, ownrer: req.user._id });
-    await newCard.save();
-    newCard = await newCard.populate(['owner', 'likes']);
-    res.status(200).send({ data: newCard });
+    let card = new Card({ ...req.body, owner: req.user._id });
+    await card.save();
+    card = await card.populate('owner likes');
+    res.status(200).send(card);
   } catch (err) {
     next(err);
   }
@@ -48,10 +51,16 @@ export async function createCard(req, res, next) {
 
 export async function deleteCard(req, res, next) {
   try {
-    const { name, link } = req.body;
-    const newCard = await Card.create({ name, link });
-    res.send({ data: newCard });
-  } catch (err) {
-    next(err);
+    const card = await Card.findById(req.params.id).populate('owner likes');
+    if (card === null) {
+      throw new NotFoundError('Карточка не найдена');
+    }
+    if (card.owner.id !== req.user._id) {
+      throw new ForbiddenError('У вас нет прав для этого действия');
+    }
+    await card.delete();
+    res.send(card);
+  } catch (error) {
+    next(error);
   }
 }
