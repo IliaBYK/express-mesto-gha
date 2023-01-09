@@ -16,6 +16,12 @@ const userSchema = new Schema({
   avatar: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url`,
+    },
   },
 });
 export default model('user', userSchema);

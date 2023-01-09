@@ -10,38 +10,32 @@ export async function getUsers(req, res, next) {
   }
 }
 
-export async function updateMe(req, res, next) {
+async function updateUser(req, res, next) {
   try {
-    const { name, about } = req.body;
-    const newMe = await User.findByIdAndUpdate(req.user._id, { name, about }, {
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
       upsert: true,
     });
-    if (newMe === null) {
+    if (user === null) {
       throw new NotFoundError('Пользователь не найден');
     }
-    res.send(newMe);
+    res.send(user);
   } catch (err) {
     next(err);
   }
 }
 
+export async function updateMe(req, res, next) {
+  const { name, about } = req.body;
+  req.body = { name, about };
+  updateUser(req, res, next);
+}
+
 export async function updateAvatar(req, res, next) {
-  try {
-    const { avatar } = req.body;
-    const newAvatar = await User.findByIdAndUpdate(req.user._id, { avatar }, {
-      new: true,
-      runValidators: true,
-      upsert: true,
-    });
-    if (newAvatar === null) {
-      throw new NotFoundError('Пользователь не найден');
-    }
-    res.send(newAvatar);
-  } catch (err) {
-    next(err);
-  }
+  const { avatar } = req.body;
+  req.body = { avatar };
+  updateUser(req, res, next);
 }
 
 export async function getUser(req, res, next) {

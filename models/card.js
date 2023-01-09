@@ -10,6 +10,12 @@ const cardSchema = new Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+      },
+      message: (props) => `${props.value} is not a valid url`,
+    },
   },
   owner: {
     type: Schema.Types.ObjectId,
