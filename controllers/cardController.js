@@ -1,6 +1,5 @@
 import Card from '../models/card.js';
 import NotFoundError from '../errors/NotFoundError.js';
-import ForbiddenError from '../errors/ForbiddenError.js';
 
 export async function getCards(req, res, next) {
   try {
@@ -54,9 +53,6 @@ export async function deleteCard(req, res, next) {
     const card = await Card.findById(req.params.id).populate('owner likes');
     if (card === null) {
       throw new NotFoundError('Карточка не найдена');
-    }
-    if (card.owner.id !== req.user._id) {
-      throw new ForbiddenError('У вас нет прав для этого действия');
     }
     await card.delete();
     res.send(card);
