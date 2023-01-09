@@ -4,10 +4,6 @@ import { log } from 'console';
 import { router as cardRoute } from './routes/card.js';
 // eslint-disable-next-line import/named
 import { router as userRoute } from './routes/user.js';
-/* import notFoundErrorHandler from './errorHandlers/notFoundErrorHandler.js';
-import badRequestErrorHandler from './errorHandlers/badRequestErrorHandler.js';
-import castErrorHandler from './errorHandlers/castErrorHandler.js';
-import validationErrorHandler from './errorHandlers/validationErrorHandler.js'; */
 import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
 import errorsHandler from './errorHandlers/errorsHandler.js';
 import NotFoundError from './errors/NotFoundError.js';
@@ -36,10 +32,6 @@ async function startApp() {
     app.use('/', cardRoute);
     app.use('*', (req, res, next) => next(new NotFoundError('Страница не найдена')));
     app.use(errorsHandler);
-    /* app.use(notFoundErrorHandler);
-    app.use(badRequestErrorHandler);
-    app.use(castErrorHandler);
-    app.use(validationErrorHandler); */
     app.use(unknownErrorHandler);
   } catch (err) {
     if (err) {
