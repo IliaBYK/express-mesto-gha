@@ -7,8 +7,8 @@ import { router as userRoute } from './routes/user.js';
 /* import notFoundErrorHandler from './errorHandlers/notFoundErrorHandler.js';
 import badRequestErrorHandler from './errorHandlers/badRequestErrorHandler.js';
 import castErrorHandler from './errorHandlers/castErrorHandler.js';
-import validationErrorHandler from './errorHandlers/validationErrorHandler.js';
-import unknownErrorHandler from './errors/UnknownError.js'; */
+import validationErrorHandler from './errorHandlers/validationErrorHandler.js'; */
+import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
 import errorsHandler from './errorHandlers/errorsHandler.js';
 import NotFoundError from './errors/NotFoundError.js';
 import { INTERNAL_SERVER_ERR_CODE } from './utils/errorsCodes.js';
@@ -39,8 +39,8 @@ async function startApp() {
     /* app.use(notFoundErrorHandler);
     app.use(badRequestErrorHandler);
     app.use(castErrorHandler);
-    app.use(validationErrorHandler);
-    app.use(unknownErrorHandler); */
+    app.use(validationErrorHandler); */
+    app.use(unknownErrorHandler);
   } catch (err) {
     if (err) {
       app.use((req, res) => res.status(INTERNAL_SERVER_ERR_CODE).send({ message: 'На сервере произошла ошибка' }));
