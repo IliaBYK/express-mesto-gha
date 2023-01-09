@@ -9,6 +9,7 @@ import badRequestErrorHandler from './errorHandlers/badRequestErrorHandler.js';
 import castErrorHandler from './errorHandlers/castErrorHandler.js';
 import validationErrorHandler from './errorHandlers/validationErrorHandler.js';
 import unknownErrorHandler from './errors/UnknownError.js';
+import NotFoundError from './errors/NotFoundError.js';
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 
@@ -31,6 +32,7 @@ async function startApp() {
     });
     app.use('/', userRoute);
     app.use('/', cardRoute);
+    app.use('*', (req, res, next) => next(new NotFoundError('Страница не найдена')));
     app.use(notFoundErrorHandler);
     app.use(badRequestErrorHandler);
     app.use(castErrorHandler);
