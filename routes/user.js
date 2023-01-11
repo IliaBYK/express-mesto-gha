@@ -2,16 +2,17 @@ import { Router } from 'express';
 import {
   getUsers,
   getUser,
+  getMe,
   updateMe,
-  postUser,
   updateAvatar,
 } from '../controllers/userController.js';
 
-// eslint-disable-next-line import/prefer-default-export, global-require
-export const router = Router();
+const router = Router();
 
 router.get('/users', getUsers);
 router.get('/users/:id', getUser);
+router.get('/users/me', getMe);
 router.patch('/users/me', updateMe);
 router.patch('/users/me/avatar', updateAvatar);
-router.post('/users', postUser);
+
+export default router;

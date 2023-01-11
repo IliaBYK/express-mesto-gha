@@ -1,13 +1,18 @@
 import express, { json, urlencoded } from 'express';
 import { set, connect } from 'mongoose';
 import { log } from 'console';
-import { router as cardRoute } from './routes/card.js';
-// eslint-disable-next-line import/named
-import { router as userRoute } from './routes/user.js';
+import * as dotenv from 'dotenv';
+import helmet from 'helmet';
+import limiter from './middlewares/limiter.js';
+import router from './routes/index.js';
 import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
 import errorsHandler from './errorHandlers/errorsHandler.js';
-import NotFoundError from './errors/NotFoundError.js';
 import { INTERNAL_SERVER_ERR_CODE } from './utils/errorsCodes.js';
+
+dotenv.config();
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'jwtmestoauthorization';
+}
 // Слушаем 3000 порт
 const { PORT = 3000, BASE_PATH = 'mongodb://localhost:27017/mestodb' } = process.env;
 
@@ -20,17 +25,10 @@ async function startApp() {
   try {
     set('strictQuery', false);
     await connect(BASE_PATH);
+    app.use(limiter);
     app.use(json());
-    app.use((req, res, next) => {
-      req.user = {
-        _id: '63b2db00a3f30de9b3d9f112',
-      };
-
-      next();
-    });
-    app.use('/', userRoute);
-    app.use('/', cardRoute);
-    app.use('*', (req, res, next) => next(new NotFoundError('Страница не найдена')));
+    app.use(helmet());
+    app.use('/', router);
     app.use(errorsHandler);
     app.use(unknownErrorHandler);
   } catch (err) {

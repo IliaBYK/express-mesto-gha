@@ -1,5 +1,6 @@
 import Card from '../models/card.js';
 import NotFoundError from '../errors/NotFoundError.js';
+import ForbiddenError from '../errors/ForbiddenError.js';
 import { OK_CODE_STATUS } from '../utils/errorsCodes.js';
 
 export async function getCards(req, res, next) {
@@ -10,8 +11,6 @@ export async function getCards(req, res, next) {
     next(err);
   }
 }
-
-// такое решение из-за ошибки: Converting circular structure to JSON
 
 async function toggleLike(method, req, res, next) {
   try {
@@ -55,9 +54,12 @@ export async function deleteCard(req, res, next) {
     if (card === null) {
       throw new NotFoundError('Карточка не найдена');
     }
+    if (req.owner.id !== req.user._id) {
+      throw new ForbiddenError('Вы не можете удалить чужую карточку');
+    }
     await card.delete();
     res.send(card);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 }
