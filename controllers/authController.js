@@ -9,7 +9,7 @@ export default async function login(req, res, next) {
     const { email, password } = req.body;
     let user = await User.findOne({ email }).select('+password');
 
-    if (!user || !(await bcryptjs.compare(password, user.password))) {
+    if (user === null || !(await bcryptjs.compare(password, user.password))) {
       throw new UnauthorizedError('Неправильные почта или пароль');
     }
 
@@ -17,12 +17,13 @@ export default async function login(req, res, next) {
     user = JSON.parse(JSON.stringify(user));
     delete user.password;
 
+    /* res.send({ token }); */
     res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
       })
-      .send({ user })
+      .send(user)
       .end();
   } catch (err) {
     next(err);

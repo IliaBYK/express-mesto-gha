@@ -17,18 +17,18 @@ const idValidation = celebrate({
 });
 
 router.get('', getUsers);
-router.get('/:id', idValidation, getUser);
 router.get('/me', getMe);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     about: Joi.string().min(2).max(30),
     name: Joi.string().min(2).max(30),
-  }),
+  }).unknown(true),
 }), updateMe);
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().uri().regex(/^https?:\/\//i),
-  }),
+  }).unknown(true),
 }), updateAvatar);
+router.get('/:id', idValidation, getUser);
 
 export default router;

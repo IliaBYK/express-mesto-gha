@@ -18,7 +18,7 @@ export async function getUser(req, res, next) {
     if (user === null) {
       throw new NotFoundError('Пользователь не найден');
     }
-    res.send({ data: user });
+    res.send(user);
   } catch (err) {
     next(err);
   }
@@ -40,18 +40,6 @@ async function updateUser(req, res, next) {
   }
 }
 
-export async function getMe(req, res, next) {
-  try {
-    const user = await User.findById(req.user._id);
-    if (user === null) {
-      throw new NotFoundError('Пользователь не найден');
-    }
-    res.send({ data: user });
-  } catch (err) {
-    next(err);
-  }
-}
-
 export async function updateMe(req, res, next) {
   const { name, about } = req.body;
   req.body = { name, about };
@@ -62,6 +50,18 @@ export async function updateAvatar(req, res, next) {
   const { avatar } = req.body;
   req.body = { avatar };
   updateUser(req, res, next);
+}
+
+export async function getMe(req, res, next) {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user === null) {
+      throw new NotFoundError('Пользователь не найден');
+    }
+    res.send(user);
+  } catch (err) {
+    next(err);
+  }
 }
 
 export async function createUser(req, res, next) {
@@ -84,7 +84,7 @@ export async function createUser(req, res, next) {
     }
     user = JSON.parse(JSON.stringify(user));
     delete user.password;
-    res.send({ data: user });
+    res.send(user);
   } catch (err) {
     next(err);
   }
