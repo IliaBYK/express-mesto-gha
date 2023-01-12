@@ -7,22 +7,23 @@ import UnauthorizedError from '../errors/UnauthorizedError.js';
 export default async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password');
-    const matched = await bcryptjs.compare(password, user.password);
+    let user = await User.findOne({ email }).select('+password');
 
-    if (!user || !matched) {
+    if (!user || !(await bcryptjs.compare(password, user.password))) {
       throw new UnauthorizedError('Неправильные почта или пароль');
     }
 
     const token = Jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    user = JSON.parse(JSON.stringify(user));
+    delete user.password;
 
     res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
       })
+      .send({ user })
       .end();
-    /* res.send({ token }); */
   } catch (err) {
     next(err);
   }

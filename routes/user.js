@@ -1,3 +1,4 @@
+import { Joi, celebrate } from 'celebrate';
 import { Router } from 'express';
 import {
   getUsers,
@@ -9,10 +10,25 @@ import {
 
 const router = Router();
 
-router.get('/users', getUsers);
-router.get('/users/:id', getUser);
-router.get('/users/me', getMe);
-router.patch('/users/me', updateMe);
-router.patch('/users/me/avatar', updateAvatar);
+const idValidation = celebrate({
+  params: {
+    id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  },
+});
+
+router.get('', getUsers);
+router.get('/:id', idValidation, getUser);
+router.get('/me', getMe);
+router.patch('/me', celebrate({
+  body: Joi.object().keys({
+    about: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30),
+  }),
+}), updateMe);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().uri().regex(/^https?:\/\//i),
+  }),
+}), updateAvatar);
 
 export default router;

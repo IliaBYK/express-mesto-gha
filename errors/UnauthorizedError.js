@@ -1,5 +1,5 @@
-import { UNAUTHORIZED_ERR_CODE } from '../utils/errorsCodes.js';
 import HttpError from './HttpError.js';
+import { UNAUTHORIZED_ERR_CODE } from '../utils/errorsCodes.js';
 
 export default class UnauthorizedError extends HttpError {
   constructor(message) {

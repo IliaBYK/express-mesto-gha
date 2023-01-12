@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import User from '../models/user.js';
 import NotFoundError from '../errors/NotFoundError.js';
-import LogedError from '../errors/LogedError.js';
+import LogedError from '../errors/ConflictError.js';
 
 export async function getUsers(req, res, next) {
   try {
@@ -76,12 +76,14 @@ export async function createUser(req, res, next) {
       throw new LogedError('Пользователь с такой почтой уже зарегистрирован');
     }
     password = await bcryptjs.hash(password, 10);
-    const user = await User.create({
+    let user = await User.create({
       name, about, avatar, email, password,
     });
     if (user === null) {
       throw new NotFoundError('Пользователь не найден');
     }
+    user = JSON.parse(JSON.stringify(user));
+    delete user.password;
     res.send({ data: user });
   } catch (err) {
     next(err);

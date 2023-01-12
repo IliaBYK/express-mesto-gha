@@ -3,6 +3,7 @@ import { set, connect } from 'mongoose';
 import { log } from 'console';
 import * as dotenv from 'dotenv';
 import helmet from 'helmet';
+import { errors as celebrateErrors } from 'celebrate';
 import limiter from './middlewares/limiter.js';
 import router from './routes/index.js';
 import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
@@ -29,6 +30,7 @@ async function startApp() {
     app.use(json());
     app.use(helmet());
     app.use('/', router);
+    app.use(celebrateErrors());
     app.use(errorsHandler);
     app.use(unknownErrorHandler);
   } catch (err) {
