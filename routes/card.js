@@ -13,7 +13,7 @@ const router = Router();
 
 const idValidation = celebrate({
   params: {
-    id: Joi.string().required().hex,
+    id: Joi.string().required().hex(),
   },
 });
 

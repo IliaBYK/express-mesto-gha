@@ -12,9 +12,9 @@ import regExp from '../utils/constants.js';
 const router = Router();
 
 const idValidation = celebrate({
-  params: {
-    id: Joi.string().required().hex,
-  },
+  params: Joi.object().keys({
+    id: Joi.string().required().hex(),
+  }),
 });
 
 router.get('', getUsers);
