@@ -17,13 +17,13 @@ const idValidation = celebrate({
 });
 
 router.get('', idValidation, getCards);
+router.delete('/:id', idValidation, deleteCard);
 router.post('', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().uri().regex(/^https?:\/\//i),
   }),
 }), createCard);
-router.delete('/:id', idValidation, deleteCard);
 router.put('/:id/likes', idValidation, likeCard);
 router.delete('/:id/likes', idValidation, dislikeCard);
 

@@ -118,7 +118,6 @@ export async function login(req, res, next) {
       })
       .status(OK_CODE_STATUS)
       .send({
-        message: 'Всё верно!',
         user,
       })
       .end();

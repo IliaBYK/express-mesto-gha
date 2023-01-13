@@ -54,7 +54,7 @@ export async function deleteCard(req, res, next) {
     if (card === null) {
       throw new NotFoundError('Карточка не найдена');
     }
-    if (req.owner.id !== req.user._id) {
+    if (req.owner !== req.user.id) {
       throw new ForbiddenError('Вы не можете удалить чужую карточку');
     }
     await card.delete();
