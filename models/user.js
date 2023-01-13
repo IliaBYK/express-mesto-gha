@@ -3,13 +3,13 @@ import { Schema, model } from 'mongoose';
 const userSchema = new Schema({
   name: {
     type: String,
-    default: 'Жак-ив Кусто',
+    default: 'Жак-Ив Кусто',
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
-    default: 'Исследователь океана',
+    default: 'Исследователь',
     minlength: 2,
     maxlength: 30,
   },
