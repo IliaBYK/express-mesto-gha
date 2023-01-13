@@ -4,6 +4,7 @@ import { log } from 'console';
 import * as dotenv from 'dotenv';
 import helmet from 'helmet';
 import { errors as celebrateErrors } from 'celebrate';
+import cookieParser from 'cookie-parser';
 import limiter from './middlewares/limiter.js';
 import router from './routes/index.js';
 import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
@@ -25,6 +26,7 @@ async function startApp() {
   try {
     set('strictQuery', false);
     await connect(BASE_PATH);
+    app.use(cookieParser());
     app.use(limiter);
     app.use(json());
     app.use(helmet());

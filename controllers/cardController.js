@@ -5,7 +5,7 @@ import { OK_CODE_STATUS } from '../utils/errorsCodes.js';
 
 export async function getCards(req, res, next) {
   try {
-    const cards = await Card.find({});
+    const cards = await Card.find({}).populate('owner likes');
     res.send(cards);
   } catch (err) {
     next(err);
