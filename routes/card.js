@@ -13,11 +13,11 @@ const router = Router();
 
 const idValidation = celebrate({
   params: {
-    id: Joi.string().required().regex(/#[0-9a-fA-F]{24}$/),
+    id: Joi.string().required().hex(/#([a-fA-F]|[0-9]){24}/),
   },
 });
 
-router.get('', idValidation, getCards);
+router.get('', getCards);
 router.delete('/:id', idValidation, deleteCard);
 router.post('', celebrate({
   body: Joi.object().keys({
