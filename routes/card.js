@@ -1,4 +1,3 @@
-import { Joi, celebrate } from 'celebrate';
 import { Router } from 'express';
 import {
   getCards,
@@ -7,24 +6,13 @@ import {
   likeCard,
   dislikeCard,
 } from '../controllers/cardController.js';
-import regExp from '../utils/constants.js';
+import { cardCreateValidation, idValidation } from '../middlewares/validation.js';
 
 const router = Router();
 
-const idValidation = celebrate({
-  params: {
-    id: Joi.string().required().hex(),
-  },
-});
-
 router.get('', getCards);
 router.delete('/:id', idValidation, deleteCard);
-router.post('', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri().regex(regExp),
-  }),
-}), createCard);
+router.post('', cardCreateValidation, createCard);
 router.put('/:id/likes', idValidation, likeCard);
 router.delete('/:id/likes', idValidation, dislikeCard);
 

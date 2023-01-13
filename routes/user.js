@@ -1,4 +1,3 @@
-import { Joi, celebrate } from 'celebrate';
 import { Router } from 'express';
 import {
   getUsers,
@@ -7,29 +6,14 @@ import {
   updateMe,
   updateAvatar,
 } from '../controllers/userController.js';
-import regExp from '../utils/constants.js';
+import { userValidationMe, userValidationAvatar, idValidation } from '../middlewares/validation.js';
 
 const router = Router();
 
-const idValidation = celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().required().hex(),
-  }),
-});
-
 router.get('', getUsers);
 router.get('/me', getMe);
-router.patch('/me', celebrate({
-  body: Joi.object().keys({
-    about: Joi.string().required().min(2).max(30),
-    name: Joi.string().required().min(2).max(30),
-  }).unknown(true),
-}), updateMe);
-router.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required().uri().regex(regExp),
-  }).unknown(true),
-}), updateAvatar);
+router.patch('/me', userValidationMe, updateMe);
+router.patch('/me/avatar', userValidationAvatar, updateAvatar);
 router.get('/:id', idValidation, getUser);
 
 export default router;

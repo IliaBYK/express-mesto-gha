@@ -1,7 +1,7 @@
 import { Joi, celebrate } from 'celebrate';
 import { Router } from 'express';
 import { createUser, login } from '../controllers/userController.js';
-import regExp from '../utils/constants.js';
+import { regExp } from '../utils/constants.js';
 
 const router = Router();
 

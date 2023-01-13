@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import regExp from '../utils/constants.js';
+import { regExp } from '../utils/constants.js';
 
 const cardSchema = new Schema({
   name: {

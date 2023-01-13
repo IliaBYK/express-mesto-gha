@@ -2,6 +2,7 @@ import Card from '../models/card.js';
 import NotFoundError from '../errors/NotFoundError.js';
 import ForbiddenError from '../errors/ForbiddenError.js';
 import { OK_CODE_STATUS } from '../utils/errorsCodes.js';
+import { NOT_FOUND_CARD_MESSAGE, FORBIDDEN_MESSAGE } from '../utils/constants.js';
 
 export async function getCards(req, res, next) {
   try {
@@ -21,7 +22,7 @@ async function toggleLike(method, req, res, next) {
       runValidators: true,
     }).populate('owner likes');
     if (card === null) {
-      throw new NotFoundError('Карточка не найдена');
+      throw new NotFoundError(NOT_FOUND_CARD_MESSAGE);
     }
     res.send(card);
   } catch (err) {
@@ -52,10 +53,10 @@ export async function deleteCard(req, res, next) {
   try {
     const card = await Card.findById(req.params.id).populate('owner likes');
     if (card === null) {
-      throw new NotFoundError('Карточка не найдена');
+      throw new NotFoundError(NOT_FOUND_CARD_MESSAGE);
     }
     if (card.owner._id.toString() !== req.user._id) {
-      throw new ForbiddenError('Вы не можете удалить чужую карточку');
+      throw new ForbiddenError(FORBIDDEN_MESSAGE);
     }
     await card.delete();
     res.send(card);

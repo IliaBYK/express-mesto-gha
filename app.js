@@ -10,6 +10,7 @@ import router from './routes/index.js';
 import unknownErrorHandler from './errorHandlers/unknownErrorHandler.js';
 import errorsHandler from './errorHandlers/errorsHandler.js';
 import { INTERNAL_SERVER_ERR_CODE } from './utils/errorsCodes.js';
+import { INTERNAL_MESSAGE } from './utils/constants.js';
 
 dotenv.config();
 if (!process.env.JWT_SECRET) {
@@ -36,7 +37,9 @@ async function startApp() {
     app.use(unknownErrorHandler);
   } catch (err) {
     if (err) {
-      app.use((req, res) => res.status(INTERNAL_SERVER_ERR_CODE).send({ message: 'На сервере произошла ошибка' }));
+      app.use((req, res) => {
+        res.status(INTERNAL_SERVER_ERR_CODE).send({ message: INTERNAL_MESSAGE });
+      });
     }
   }
 }

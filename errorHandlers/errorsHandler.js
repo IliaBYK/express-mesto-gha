@@ -4,6 +4,7 @@ import {
   BAD_REQUEST_ERR_CODE,
   CONFLICT_ERROR,
 } from '../utils/errorsCodes.js';
+import { CONFLICT_MESSAGE } from '../utils/constants.js';
 
 export default function errorsHandler(err, req, res, next) {
   if (err instanceof HttpError) {
@@ -16,7 +17,7 @@ export default function errorsHandler(err, req, res, next) {
     const { message } = err;
     res.status(BAD_REQUEST_ERR_CODE).send({ message });
   } else if (err.code === 11000) {
-    res.status(CONFLICT_ERROR).send({ message: 'Пользователь с такой почтой уже зарегистрирован' });
+    res.status(CONFLICT_ERROR).send({ message: CONFLICT_MESSAGE });
   } else {
     next(err);
   }
