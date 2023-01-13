@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import regExp from '../utils/constants.js';
 
 const userSchema = new Schema({
   name: {
@@ -18,7 +19,7 @@ const userSchema = new Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(v) {
-        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+        return regExp.test(v);
       },
       message: (props) => `${props.value} is not a valid url`,
     },

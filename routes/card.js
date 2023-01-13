@@ -7,12 +7,13 @@ import {
   likeCard,
   dislikeCard,
 } from '../controllers/cardController.js';
+import regExp from '../utils/constants.js';
 
 const router = Router();
 
 const idValidation = celebrate({
   params: {
-    id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+    id: Joi.string().required().regex(/#[0-9a-fA-F]{24}$/),
   },
 });
 
@@ -21,7 +22,7 @@ router.delete('/:id', idValidation, deleteCard);
 router.post('', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri().regex(/^https?:\/\//i),
+    link: Joi.string().required().uri().regex(regExp),
   }),
 }), createCard);
 router.put('/:id/likes', idValidation, likeCard);

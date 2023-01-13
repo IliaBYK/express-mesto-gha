@@ -1,5 +1,4 @@
 import { Router } from 'express';
-// eslint-disable-next-line import/no-unresolved
 import cardRouter from './card.js';
 import userRouter from './user.js';
 import authRouter from './auth.js';

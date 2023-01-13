@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import regExp from '../utils/constants.js';
 
 const cardSchema = new Schema({
   name: {
@@ -12,7 +13,7 @@ const cardSchema = new Schema({
     required: true,
     validate: {
       validator(v) {
-        return /^(https?:\/\/)(www.)?[^\s]+(#?)$/i.test(v);
+        return regExp.test(v);
       },
       message: (props) => `${props.value} is not a valid url`,
     },

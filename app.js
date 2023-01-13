@@ -21,7 +21,6 @@ const app = express();
 
 app.use(urlencoded({ extended: true }));
 
-// eslint-disable-next-line consistent-return
 async function startApp() {
   try {
     set('strictQuery', false);

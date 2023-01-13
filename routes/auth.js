@@ -1,6 +1,7 @@
 import { Joi, celebrate } from 'celebrate';
 import { Router } from 'express';
 import { createUser, login } from '../controllers/userController.js';
+import regExp from '../utils/constants.js';
 
 const router = Router();
 
@@ -17,7 +18,7 @@ router.post('/signup', celebrate({
     password: Joi.string().required(),
     about: Joi.string().min(2).max(30),
     name: Joi.string().min(2).max(30),
-    avatar: Joi.string().uri().regex(/^https?:\/\//i),
+    avatar: Joi.string().uri().regex(regExp),
   }).unknown(true),
 }), createUser);
 

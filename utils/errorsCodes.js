@@ -1,4 +1,5 @@
 export const OK_CODE_STATUS = 200;
+export const CREATED_CODE = 201;
 
 export const BAD_REQUEST_ERR_CODE = 400;
 export const UNAUTHORIZED_ERR_CODE = 401;

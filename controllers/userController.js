@@ -2,9 +2,8 @@ import bundle from 'bcryptjs';
 import pkg from 'jsonwebtoken';
 import User from '../models/user.js';
 import NotFoundError from '../errors/NotFoundError.js';
-import LogedError from '../errors/ConflictError.js';
 import UnauthorizedError from '../errors/UnauthorizedError.js';
-import { OK_CODE_STATUS } from '../utils/errorsCodes.js';
+import { CREATED_CODE, OK_CODE_STATUS } from '../utils/errorsCodes.js';
 
 const { compare, hash } = bundle;
 const { sign } = pkg;
@@ -30,8 +29,9 @@ export async function getUser(req, res, next) {
   }
 }
 
-async function updateUser(req, res, next) {
+async function updateUser(req, res, next, options) {
   try {
+    req.body = options;
     const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
@@ -48,14 +48,12 @@ async function updateUser(req, res, next) {
 
 export async function updateMe(req, res, next) {
   const { name, about } = req.body;
-  req.body = { name, about };
-  updateUser(req, res, next);
+  updateUser(req, res, next, { name, about });
 }
 
 export async function updateAvatar(req, res, next) {
   const { avatar } = req.body;
-  req.body = { avatar };
-  updateUser(req, res, next);
+  updateUser(req, res, next, { avatar });
 }
 
 export async function getMe(req, res, next) {
@@ -77,26 +75,18 @@ export async function createUser(req, res, next) {
     } = req.body;
     let { email, password } = req.body;
     email = email.toLowerCase();
-    const logedUser = await User.findOne({ email });
-    if (logedUser !== null) {
-      throw new LogedError('Пользователь с такой почтой уже зарегистрирован');
-    }
     password = await hash(password, 10);
     let user = await User.create({
       name, about, avatar, email, password,
     });
-    if (user === null) {
-      throw new NotFoundError('Пользователь не найден');
-    }
     user = JSON.parse(JSON.stringify(user));
     delete user.password;
-    res.status(OK_CODE_STATUS).send(user);
+    res.status(CREATED_CODE).send(user);
   } catch (err) {
     next(err);
   }
 }
 
-// eslint-disable-next-line consistent-return
 export async function login(req, res, next) {
   try {
     const { email, password } = req.body;
