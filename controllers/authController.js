@@ -8,6 +8,9 @@ import { WRONG_DATA_MESSAGE } from '../utils/constants.js';
 const { compare, hash } = bundle;
 const { sign } = pkg;
 
+//с декораторами пока непросто, надо много прочитать, постараюсь освоить в ближайшее время
+//спасибо за совет
+
 export async function createUser(req, res, next) {
   try {
     const {
