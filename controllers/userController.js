@@ -1,10 +1,13 @@
-import bcryptjs from 'bcryptjs';
-import Jwt from 'jsonwebtoken';
+import bundle from 'bcryptjs';
+import pkg from 'jsonwebtoken';
 import User from '../models/user.js';
 import NotFoundError from '../errors/NotFoundError.js';
 import LogedError from '../errors/ConflictError.js';
 import UnauthorizedError from '../errors/UnauthorizedError.js';
 import { OK_CODE_STATUS } from '../utils/errorsCodes.js';
+
+const { compare, hash } = bundle;
+const { sign } = pkg;
 
 export async function getUsers(req, res, next) {
   try {
@@ -78,7 +81,7 @@ export async function createUser(req, res, next) {
     if (logedUser !== null) {
       throw new LogedError('Пользователь с такой почтой уже зарегистрирован');
     }
-    password = await bcryptjs.hash(password, 10);
+    password = await hash(password, 10);
     let user = await User.create({
       name, about, avatar, email, password,
     });
@@ -87,7 +90,7 @@ export async function createUser(req, res, next) {
     }
     user = JSON.parse(JSON.stringify(user));
     delete user.password;
-    res.send(user);
+    res.status(OK_CODE_STATUS).send(user);
   } catch (err) {
     next(err);
   }
@@ -99,11 +102,11 @@ export async function login(req, res, next) {
     const { email, password } = req.body;
     let user = await User.findOne({ email }).select('+password');
 
-    if (user === null || !(await bcryptjs.compare(password, user.password))) {
+    if (user === null || !(await compare(password, user.password))) {
       throw new UnauthorizedError('Неправильные почта или пароль');
     }
 
-    const token = Jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    const token = sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     user = JSON.parse(JSON.stringify(user));
     delete user.password;
 
