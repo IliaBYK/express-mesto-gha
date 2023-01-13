@@ -110,7 +110,6 @@ export async function login(req, res, next) {
     user = JSON.parse(JSON.stringify(user));
     delete user.password;
 
-    /* res.send({ token }); */
     res
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
